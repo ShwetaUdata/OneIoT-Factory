@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   // 👇 Add this for GitHub Pages
-  base: "/OneIoT-Factory/", // <-- replace Factory with your repo name
+  base: "/", // <-- replace Factory with your repo name
 
   plugins: [
     react(),
