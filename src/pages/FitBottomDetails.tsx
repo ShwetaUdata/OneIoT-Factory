@@ -1,27 +1,29 @@
 "use client"
 
-import { ArrowLeft, Download, Settings, AlertCircle } from "lucide-react"
+import { ArrowLeft, Download, Settings, AlertCircle, CheckCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
+import { DashboardHeader } from "@/components/DashboardHeader"
 
 export default function GasCuttingDetails() {
   const [selectedPeriod, setSelectedPeriod] = useState<"24h" | "7d" | "30d">("24h")
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-  const [hoveredBar, setHoveredBar] = useState<number | null>(null)
-  const [barMousePos, setBarMousePos] = useState({ x: 0, y: 0 })
+const [hoveredBar, setHoveredBar] = useState<number | null>(null)
+  const [barMousePos, setBarMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+
 
   // Different data sets for each time period
   const timelineData = {
     "24h": {
       uptime: "91.667%",
-      status: "Issues Detected",
-      icon: AlertCircle,
-      iconColor: "text-red-500",
+      status: "Operational",
+      icon: CheckCircle,      // ✅ new icon
+      iconColor: "text-green-500",
       segments: 48, // 48 half-hour segments
       timeLabels: ["00:00", "06:00", "12:00", "18:00", "24:00"],
       connected: "91.7%",
@@ -32,7 +34,7 @@ export default function GasCuttingDetails() {
       uptime: "91.964%",
       status: "Issues Detected",
       icon: AlertCircle,
-      iconColor: "text-red-500",
+      iconColor: "text-green-500",
       segments: 168, // 7 days × 24 hours = 168 hourly segments
       timeLabels: ["Aug 16", "Aug 17", "Aug 18", "Aug 19", "Aug 20", "Aug 21", "Aug 22"],
       connected: "92.0%",
@@ -42,7 +44,7 @@ export default function GasCuttingDetails() {
     "30d": {
       uptime: "93.472%",
       status: "Issues Detected",
-      icon: AlertCircle,
+      icon: CheckCircle,
       iconColor: "text-green-500",
       segments: 720, // 30 days × 24 hours = 720 hourly segments for more granular data
       timeLabels: ["Jul 24", "Aug 1", "Aug 9", "Aug 17"],
@@ -141,21 +143,32 @@ export default function GasCuttingDetails() {
   }
 
   const timelineSegments = generateTimelineSegments()
-
-  const hourlySpeedData = [
-    { hour: "00:00", speed: 110, period: "night" },
-    { hour: "02:00", speed: 124, period: "night" },
-    { hour: "04:00", speed: 162, period: "night" },
-    { hour: "06:00", speed: 185, period: "morning" },
-    { hour: "08:00", speed: 203, period: "morning" },
-    { hour: "10:00", speed: 219, period: "morning" },
-    { hour: "12:00", speed: 215, period: "morning" },
-    { hour: "14:00", speed: 204, period: "afternoon" },
-    { hour: "16:00", speed: 194, period: "afternoon" },
-    { hour: "18:00", speed: 181, period: "afternoon" },
-    { hour: "20:00", speed: 169, period: "afternoon" },
-    { hour: "22:00", speed: 130, period: "night" },
-  ]
+const hourlySpeedData = [
+  { hour: "00:00", speed: 124, period: "night" },
+  { hour: "01:00", speed: 100, period: "night" },
+  { hour: "02:00", speed: 82, period: "night" },
+  { hour: "03:00", speed: 109, period: "night" },
+  { hour: "04:00", speed: 132, period: "night" },
+  { hour: "05:00", speed: 162, period: "night" },
+  { hour: "06:00", speed: 171, period: "morning" },
+  { hour: "07:00", speed: 200, period: "morning" },
+  { hour: "08:00", speed: 209, period: "morning" },
+  { hour: "09:00", speed: 208, period: "morning" },
+  { hour: "10:00", speed: 210, period: "morning" },
+  { hour: "11:00", speed: 220, period: "morning" },
+  { hour: "12:00", speed: 204, period: "afternoon" },
+  { hour: "13:00", speed: 184, period: "afternoon" },
+  { hour: "14:00", speed: 196, period: "afternoon" },
+  { hour: "15:00", speed: 173, period: "afternoon" },
+  { hour: "16:00", speed: 161, period: "afternoon" },
+  { hour: "17:00", speed: 150, period: "afternoon" },
+  { hour: "18:00", speed: 174, period: "afternoon" },
+  { hour: "19:00", speed: 158, period: "afternoon" },
+  { hour: "20:00", speed: 152, period: "afternoon" },
+  { hour: "21:00", speed: 137, period: "afternoon" },
+  { hour: "22:00", speed: 119, period: "night" },
+  { hour: "23:00", speed: 90, period: "night" },
+]
 
   const plateStatus = [
     { id: "0237/0B/033", status: "Ready" },
@@ -177,18 +190,18 @@ export default function GasCuttingDetails() {
     }
   }
 
-  const getPeriodColor = (period: string) => {
-    switch (period) {
-      case "morning":
-        return "bg-emerald-500"
-      case "afternoon":
-        return "bg-blue-500"
-      case "night":
-        return "bg-purple-500"
-      default:
-        return "bg-gray-500"
-    }
+ const getPeriodColor = (period: string) => {
+  switch (period) {
+    case "morning":
+      return "bg-emerald-500"
+    case "afternoon":
+      return "bg-blue-500"
+    case "night":
+      return "bg-purple-500"
+    default:
+      return "bg-slate-500"
   }
+}
 
   const getPlateStatusBadge = (status: string) => {
     switch (status) {
@@ -206,9 +219,9 @@ export default function GasCuttingDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <div className="border-b border-slate-700 bg-slate-800">
+    <div className="min-h-screen bg-slate-950 w-full bg-[#08080a]">
+      <DashboardHeader /> 
+      <div className="px-20 pb-8 w-full relative top-20">
         <div className="w-full px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -217,14 +230,15 @@ export default function GasCuttingDetails() {
               </Link>
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-2xl font-bold text-white">Fit-up & welding BOTTOM</h1>
-                  <Link to="/operator/rahul">
+                  <h1 className="text-3xl font-bold text-white">Fit-Bottom & Welding: TTS •</h1>
+                  <Link to="/operator-productivity">
                     <Badge className="bg-blue-600 text-white text-sm px-3 py-1 cursor-pointer hover:bg-blue-700 transition-colors">
-                        Operator: Rahul
+                        Operator: Neeraj
                     </Badge>
                   </Link>
+
                 </div>
-                <p className="text-sm text-slate-400 mt-1">Fit-up & welding BOTTOM Line • Production Analytics Dashboard</p>
+                <p className="text-s text-slate-400 mt-1">Welding Assembly Line • Production Analytics Dashboard</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -245,19 +259,19 @@ export default function GasCuttingDetails() {
         </div>
       </div>
 
-      <div className="w-full px-6 py-6">
+      <div className="px-20 pb-8 w-full relative top-12">
         {/* Status Timeline */}
-        <Card className="mb-6 bg-slate-800 border-slate-700">
+        <Card style={{ height: "12rem" }}  className="mb-6 bg-[#121529] border[#1f283b]">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 relative -top-4">
                 <StatusIcon className={`w-5 h-5 ${currentData.iconColor}`} />
                 <div>
-                  <CardTitle className="text-lg text-white">Fit-up & welding BOTTOM</CardTitle>
+                  <CardTitle className="text-lg text-white">Fit-Bottom & Welding: TTS</CardTitle>
                   <span
                     className={`text-sm ${
                       selectedPeriod === "24h"
-                        ? "text-red-500"
+                        ? "text-green-500"
                         : selectedPeriod === "7d"
                           ? "text-red-500"
                           : "text-green-500"
@@ -312,7 +326,7 @@ export default function GasCuttingDetails() {
           </CardHeader>
           <CardContent>
             {/* Timeline Bar */}
-            <div className="flex h-8 rounded-sm mb-4 overflow-hidden border border-slate-600 relative">
+            <div className="flex h-7 rounded-sm mb-4 overflow-hidden border border-slate-600 relative -top-5">
               {timelineSegments.map((segment, index) => (
                 <>
                   <div
@@ -383,12 +397,12 @@ export default function GasCuttingDetails() {
                 </div>
               )}
             </div>
-            <div className="flex justify-between text-xs text-slate-400 mb-4">
+            <div className="flex justify-between text-xs text-slate-400 mb-4 relative -top-6">
               {currentData.timeLabels.map((label, index) => (
                 <span key={index}>{label}</span>
               ))}
             </div>
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-6 text-sm relative -top-6">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 <span className="text-slate-300">{currentData.connected} Connected</span>
@@ -408,142 +422,174 @@ export default function GasCuttingDetails() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Hourly Line Speed Chart */}
-          <Card className="lg:col-span-1 bg-slate-800 border-slate-700">
-            <CardHeader>
-              <div>
-                <CardTitle className="text-lg mb-1 text-white">Hourly Avg. Line Speed</CardTitle>
-                <p className="text-sm text-slate-400">24-hour production performance</p>
-              </div>
-              <div className="flex items-center gap-6 mt-4">
-                <div>
-                  <div className="text-3xl font-bold text-white">154 MPM</div>
-                  <div className="text-xs text-slate-400">Current Hour</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-4 gap-4 text-sm mt-4">
-                <div className="text-center">
-                  <div className="font-semibold text-white">159</div>
-                  <div className="text-slate-400 text-xs">Avg MPM</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-white">219</div>
-                  <div className="text-slate-400 text-xs">Peak MPM</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-white">80</div>
-                  <div className="text-slate-400 text-xs">Min MPM</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-white">56%</div>
-                  <div className="text-slate-400 text-xs">Avg Efficiency</div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="relative h-40 bg-slate-800 rounded p-3">
-                {/* Y-axis labels */}
-                <div className="absolute left-2 top-0 h-full flex flex-col justify-between text-xs text-slate-400 py-3">
-                  <span>250</span>
-                  <span>200</span>
-                  <span>150</span>
-                  <span>100</span>
-                  <span>50</span>
-                  <span>0</span>
-                </div>
+            <Card  style={{ height: "26.5rem" }} className="bg-[#101629] border[#1f283b] ">
+      <CardHeader>
+        <div>
+          <CardTitle className="text-lg mb-1 text-white">Hourly Avg. Line Speed</CardTitle>
+          <p className="text-sm text-slate-400">24-hour production performance</p>
+        </div>
+        <div className="flex items-center gap-6 mt-4">
+          < div className="relative" style={{ top: "-3.75rem", left: "25.5rem" }}>
+            <div className="text-2xl font-bold text-white">203 MPM</div>
+            <div className="text-xs text-slate-400">Current Hour</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4 text-sm mt-4 relative -top-10 bg-[#1f283b] p-3 rounded">
+          <div className="text-center">
+            <div className="font-semibold text-white">159</div>
+            <div className="text-slate-400 text-xs">Avg MPM</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-white">219</div>
+            <div className="text-slate-400 text-xs">Peak MPM</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-white">80</div>
+            <div className="text-slate-400 text-xs">Min MPM</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-white">56%</div>
+            <div className="text-slate-400 text-xs">Avg Efficiency</div>
+          </div>
+        </div>
+      </CardHeader>
 
-                {/* Y-axis title */}
-                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -rotate-90 text-xs text-slate-400">
-                  Speed (MPM)
-                </div>
+      <CardContent>
+  <div className="relative h-48 bg-[#101629] rounded p-3 -top-12">
+    {/* Y-axis labels */}
+    <div className="absolute left-2 top-0 h-full flex flex-col justify-between text-xs text-slate-400 py-3">
+      <span>250</span>
+      <span>200</span>
+      <span>150</span>
+      <span>100</span>
+      <span>50</span>
+      <span>0</span>
+    </div>
 
-                {/* Chart area */}
-                <div className="ml-12 h-full flex items-end justify-between gap-1 pb-3 pt-1 w-8">
-                  {hourlySpeedData.map((item, index) => (
-                  <div key={index} className="flex flex-col justify-end items-center flex-1 relative h-full">
-                    {/* Bar */}
-                    <div
-                      className={`w-full ${getPeriodColor(item.period)} rounded-t cursor-pointer`}
-                      style={{ height: `${(item.speed / 250) * 100}%`, minHeight: "2px" }}
-                      onMouseEnter={(e) => { setHoveredBar(index); setBarMousePos({ x: e.clientX, y: e.clientY }) }}
-                      onMouseLeave={() => setHoveredBar(null)}
-                      onMouseMove={(e) => setBarMousePos({ x: e.clientX, y: e.clientY })}
-                    />
-                    <span className="text-[10px] text-slate-400 mt-1">{item.hour}</span>
-                  </div>
-                ))}
+    {/* Y-axis title */}
+    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -rotate-90 text-xs text-slate-400">
+      Speed (MPM)
+    </div>
 
-                {hoveredBar !== null && (
-              <div
-                className="fixed z-50 pointer-events-none"
-                style={{
-                  left: barMousePos.x + 12,
-                  top: barMousePos.y - 60,
-                  transform: barMousePos.x > window.innerWidth - 200 ? "translateX(-100%)" : "none",
-                }}
-              >
-                <div className="bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-2 min-w-[160px] text-sm">
-                  <div className="text-white font-medium">{hourlySpeedData[hoveredBar].hour}</div>
-                  <div className="text-slate-400">Speed: <span className="text-white">{hourlySpeedData[hoveredBar].speed} MPM</span></div>
-                  <div className="text-slate-400">Period: <span className="text-white capitalize">{hourlySpeedData[hoveredBar].period}</span></div>
-                </div>
-              </div>
-            )}
-                </div>
-                {/* Time labels at bottom */}
-                <div className="ml-8 flex justify-between text-xs text-slate-400 mt-1">
-                  {hourlySpeedData.map((item, index) => (
-                    <span key={index} className="flex-1 text-center">
-                      {item.hour}
-                    </span>
-                  ))}
-                </div>
-              </div>
+    {/* Chart area */}
+    <div className="ml-12 h-full flex items-end justify-between gap-0.5 pb-3 pt-1 relative w-30">
+      {/* Horizontal grid lines */}
+      {[250, 200, 150, 100, 50, 0].map((val, idx) => (
+        <div
+          key={idx}
+          className={`absolute left-0 w-full border-t ${
+            val === 0 ? "border-slate-500" : "border-[#1f283b]"
+          }`}
+          style={{ bottom: `${(val / 250) * 100}%` }}
+        />
+      ))}
 
-              {/* Legend */}
-              <div className="flex items-center justify-center gap-4 mt-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-                  <span className="text-slate-300">Morning (06-14)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                  <span className="text-slate-300">Afternoon (14-22)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded"></div>
-                  <span className="text-slate-300">Night (22-06)</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Bars */}
+      {hourlySpeedData.map((item, index) => (
+        <div
+          key={index}
+          className="flex flex-col justify-end items-center flex-1 relative h-full"
+        >
+          <div
+            className={`w-3 ${getPeriodColor(item.period)} rounded-t cursor-pointer`}
+            style={{ height: `${(item.speed / 250) * 100}%`, minHeight: "2px" }}
+            onMouseEnter={(e) => {
+              setHoveredBar(index);
+              setBarMousePos({ x: e.clientX, y: e.clientY });
+            }}
+            onMouseLeave={() => setHoveredBar(null)}
+            onMouseMove={(e) => setBarMousePos({ x: e.clientX, y: e.clientY })}
+          />
+        </div>
+      ))}
+    </div>
 
+    {/* X-axis labels */}
+    <div className="ml-10 flex justify-between text-[10px] text-slate-400 mt-1">
+      {hourlySpeedData.map((item, index) => (
+        <span key={index} className="flex-1 text-center">
+          {index % 2 === 0 ? item.hour : ""}
+        </span>
+      ))}
+    </div>
+
+    {/* Tooltip */}
+    {hoveredBar !== null && (
+      <div
+        className="fixed z-50 pointer-events-none"
+        style={{
+          left: barMousePos.x + 12,
+          top: barMousePos.y - 70,
+          transform:
+            barMousePos.x > window.innerWidth - 200 ? "translateX(-100%)" : "none",
+        }}
+      >
+        <div className="bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-2 min-w-[160px] text-sm">
+          <div className="text-white font-medium">
+            {hourlySpeedData[hoveredBar].hour}
+          </div>
+          <div className="text-slate-400">
+            Speed: <span className="text-white">{hourlySpeedData[hoveredBar].speed} MPM</span>
+          </div>
+          <div className="text-slate-400">
+            Period:{" "}
+            <span className="text-white capitalize">
+              {hourlySpeedData[hoveredBar].period}
+            </span>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Legend */}
+  <div className="flex items-center justify-center gap-4 mt-3 text-sm relative -top-10">
+    <div className="flex items-center gap-2">
+      <div className="w-3 h-3 bg-emerald-500 rounded"></div>
+      <span className="text-slate-300">Morning (06-14)</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <div className="w-3 h-3 bg-blue-500 rounded"></div>
+      <span className="text-slate-300">Afternoon (14-22)</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <div className="w-3 h-3 bg-purple-500 rounded"></div>
+      <span className="text-slate-300">Night (22-06)</span>
+    </div>
+  </div>
+</CardContent>
+
+    </Card>
           {/* Production Progress */}
-          <Card className="bg-slate-800 border-slate-700">
+          <Card style={{ height: "12rem", width: "36rem" }} className="bg-[#101629] border[#1f283b] ">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xl text-white">Production Progress</CardTitle>
-              <p className="text-base text-slate-400">Daily target completion</p>
+              <CardTitle className="text-lg text-white">Production Progress</CardTitle>
+              <p className="text-sm text-slate-400">Daily target completion</p>
             </CardHeader>
             <CardContent className="space-y-2 py-2">
-              <div>
-                <div className="text-4xl font-bold text-white mb-2">77.8%</div>
-                <div className="text-sm text-slate-400 mb-2">Complete</div>
-                <div className="w-full bg-slate-700 rounded-full h-5 mb-3">
+              <div >
+                <div className="relative" style={{ top: "-4.75rem", left: "28.5rem" }}>
+                  <div className="text-2xl font-bold text-white mb-2">77.8%</div>
+                  <div className="text-sm text-slate-400 mb-2">Complete</div>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-5 mb-3 relative" style={{ top: "-4.5rem" }}>
                   <div
                     className="bg-green-500 h-5 rounded-full transition-all duration-500"
-                    style={{ width: "77.8%" }}
+                    style={{ width: "69.8%" }}
                   ></div>
+                   <span className="absolute left-80 top-1/2 transform -translate-y-1/2 text-white text-xs font-semibold">78%</span>
                 </div>
               </div>
-              <div className="space-y-1 text-sm">
-                <div className="font-medium text-green-400">3,888 meters completed</div>
-                <div className="text-slate-400">Target: 5,000</div>
-                <div className="text-orange-400">1,112 meters remaining</div>
+              <div className="space-y-1 text-sm relative" style={{ top: "-4.5rem" }}>
+                <div className="font-medium text-400">3,888 meters completed</div>
+                <div className="text-slate-400 relative" style={{ left: "28.5rem" , top: "-1.5rem" }}>Target: 5,000</div>
+                <div className="text-400 relative" style={{ left: "12.5rem" , top: "-1rem" }}><span className="text-orange-400">1,112</span> meters remaining</div>
               </div>
             </CardContent>
           </Card>
 
           {/* Plate Status */}
-         <Card className="bg-slate-800 border-slate-700">
+          <Card className="bg-[#101629] border[#1f283b]">
             <CardHeader>
               <CardTitle className="text-lg text-white">Plate Status</CardTitle>
               <p className="text-sm text-slate-400">Current plate inspection status</p>
@@ -566,7 +612,7 @@ export default function GasCuttingDetails() {
               </div>
               <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-700">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-white">4</div>
+                  <div className="text-2xl font-bold text-green-400">4</div>
                   <div className="text-xs text-slate-400">Total Plates</div>
                 </div>
                 <div className="text-center">
@@ -581,3 +627,4 @@ export default function GasCuttingDetails() {
     </div>
   )
 }
+

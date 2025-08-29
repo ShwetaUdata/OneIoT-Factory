@@ -1,14 +1,11 @@
-import { Search, Bell, Menu, Sun, Moon, User, LogIn, LogOut } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Search, Bell, Menu, Sun, Moon, User, LogIn, LogOut, BarChart2, Home, BarChart3, PieChart, Building2, Factory } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 
 export const DashboardHeader = () => {
-  const [isDark, setIsDark] = useState(() => {
-    return document.documentElement.classList.contains("dark");
-  });
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -23,7 +20,6 @@ export const DashboardHeader = () => {
         }
       }
     };
-
     mediaQuery.addEventListener("change", handleSystemThemeChange);
     return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
   }, []);
@@ -31,7 +27,6 @@ export const DashboardHeader = () => {
   const toggleTheme = () => {
     const newIsDark = !isDark;
     setIsDark(newIsDark);
-
     if (newIsDark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
@@ -42,53 +37,40 @@ export const DashboardHeader = () => {
   };
 
   return (
-    <header className="bg-card border-b border-border">
-      <div className="flex items-center justify-between p-4">
-        {/* Left side */}
+    <>
+      {/* Sidebar fixed to left, full height */}
+      <div className="fixed top-0 left-0 h-screen w-16 bg-[#101629] flex flex-col items-center justify-between border-r border-slate-700 z-50">
+        <div className="flex flex-col items-center space-y-8 mt-4">
+          <div className="w-8 h-8 bg-green-500 flex items-center justify-center rounded-md">
+            <Factory className="text-white w-5 h-5" />
+          </div>
+          <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700">
+            <BarChart3 className="text-white w-5 h-5"  />
+          </button>
+        </div>
+      </div>
+
+      {/* Header fixed below sidebar header with left offset */}
+      <header className="fixed top-0 left-14 right-0 h-16 bg-[#030517] border-b border-slate-700 flex items-center justify-between px-6 z-40">
+       <div className="relative w-[350px]">
+          <Search className="absolute left-3 top-1/2 h-5 w-5 text-slate-400 -translate-y-1/2 pointer-events-none" />
+          <input type="text" placeholder="Search across platform..." className="w-full h-11 pl-10 pr-4 rounded-lg bg-slate-900 text-slate-300 border border-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 px-2 py-1 text-xs bg-muted text-muted-foreground rounded select-none">⌘K</kbd>
+        </div>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon">
-            <Menu className="w-5 h-5" />
-          </Button>
-
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">JSSL Indisec Line Factory</h1>
-            <p className="text-sm text-muted-foreground">
-              Monitor and control all SSL production lines in real-time
-            </p>
-          </div>
-        </div>
-
-        {/* Center - Search */}
-        <div className="flex-1 max-w-md mx-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search across platform..." className="pl-10 bg-background border-border" />
-            <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 px-2 py-1 text-xs bg-muted text-muted-foreground rounded">
-              ⌘K
-            </kbd>
-          </div>
-        </div>
-
-        {/* Right side */}
-        <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={toggleTheme} className="hover:bg-muted">
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
-
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-5 h-5" />
           </Button>
-
-          {/* Dropdown for Avatar */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-2 ml-2 cursor-pointer">
+              <div className="flex items-center gap-2 ml-2 cursor-pointer select-none">
                 <Avatar>
                   <AvatarFallback className="bg-primary text-primary-foreground">OP</AvatarFallback>
                 </Avatar>
-                <div className="text-sm">
-                  <div className="font-medium">operator_super_onejot</div>
-                </div>
+                <div className="text-sm font-medium">operator_super_onejot</div>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -105,7 +87,7 @@ export const DashboardHeader = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 };

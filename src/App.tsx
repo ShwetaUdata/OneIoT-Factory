@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductionDetails from "./pages/ProductionDetails";
-import OperatorProfile from "./pages/OperatorProfile";
 import GasCuttingDetails from "./pages/GasCuttingDetails";
 import ShotBlastingDetails from "./pages/ShotBlastingDetails";
 import FitUpDetails from "./pages/FitUpDetails";
@@ -30,8 +29,6 @@ const App = () => (
           <Route path="/fit-up-welding-bottom-details" element={<FitBottomDetails />} />
           <Route path="/flange-straightening" element={<FlangeStraightening />} />
           <Route path="/production/:id" element={<ProductionDetails />} />
-
-  <Route path="/operator/:name" element={<OperatorProfile />} />
           <Route path="/operator-productivity" element={<OperatorProductivity />} />
           <Route path="/production/fit-up-welding" element={<ProductionDetails />} />
           <Route path="/production/fit-up-welding-top" element={<ProductionDetails />} />

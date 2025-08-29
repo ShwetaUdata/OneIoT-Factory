@@ -43,6 +43,26 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
+      /* Dashboard specific colors */
+    --dashboard-bg: 215 28% 17%;
+    --dashboard-card: 215 32% 22%;
+    --dashboard-card-border: 215 25% 27%;
+    --dashboard-text-primary: 210 40% 98%;
+    --dashboard-text-secondary: 215 20% 65%;
+    --dashboard-text-muted: 215 15% 50%;
+    --dashboard-input-bg: 215 25% 27%;
+    
+    /* Status colors */
+    --status-connected: 120 60% 50%;
+    --status-degraded: 38 92% 50%;
+    --status-down: 0 84% 60%;
+    --status-operational: 120 60% 50%;
+    
+    /* Interactive elements */
+    --button-active: 210 100% 56%;
+    --button-inactive: 215 25% 27%;
+    --button-hover: 210 100% 60%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

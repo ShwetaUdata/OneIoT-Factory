@@ -170,12 +170,18 @@ const productionData = [
   }
 ];
 
-const Index = () => {
+const Index = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen bg-[#08080a]">
       <DashboardHeader />
       
-      <main className="max-w-[1800px] mx-auto p-4 space-y-7">
+      <main className="flex-1 ml-10 mt-10 p-6 overflow-auto">
+           <div className="py-4 pb-5 px-5">
+                <h1 className="text-3xl font-bold text-foreground">JSSL Indisec Line Factory</h1>
+                <p className="text-sm text-muted-foreground">
+                    Monitor and control all SSL production lines in real-time
+                </p>
+              </div>
         {productionData.map((line) => (
           <ProductionLine key={line.id} data={line} />
         ))}

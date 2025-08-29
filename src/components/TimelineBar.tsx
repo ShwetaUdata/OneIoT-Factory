@@ -1,30 +1,31 @@
 interface TimelineSegment {
   type: 'connected' | 'degraded' | 'down';
-  start: number;
-  duration: number;
+  start: number;    // percentage start along the bar (0-100)
+  duration: number; // percentage width along the bar
 }
 
 interface TimelineBarProps {
   timelineData: TimelineSegment[];
 }
 
-export default function TimelineBar({ timelineData }: TimelineBarProps) {
-  const segmentColors = {
-    connected: 'bg-green-400',
-    degraded: 'bg-yellow-300',
-    down: 'bg-red-400',
-  };
+const segmentColors: Record<string, string> = {
+  connected: 'bg-green-500',
+  degraded: 'bg-yellow-400',
+  down: 'bg-red-500',
+};
 
+export function TimelineBar({ timelineData }: TimelineBarProps) {
   return (
-    <div className="h-6 bg-gray-200 rounded-sm overflow-hidden relative w-full">
-      {timelineData.map((segment, index) => (
+    <div className="relative w-full h-6 bg-gray-300 rounded overflow-hidden">
+      {timelineData.map((segment, idx) => (
         <div
-          key={index}
-          className={`absolute top-0 h-full ${segmentColors[segment.type]}`}
+          key={idx}
+          className={`${segmentColors[segment.type]} absolute top-0 h-full`}
           style={{
             left: `${segment.start}%`,
             width: `${segment.duration}%`,
-            borderRadius: index === 0 || index === timelineData.length - 1 ? '0.125rem' : 0,
+            borderRadius:
+              idx === 0 || idx === timelineData.length - 1 ? '0.125rem' : undefined,
           }}
         />
       ))}
